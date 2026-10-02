@@ -4820,3 +4820,20 @@ kbd {
     max-width: 70px;
   }
 }
+/* =====================================================
+   Bolda TV Branding
+   ===================================================== */
+.navbar-brand .brand-logo {
+  display: block;
+  width: auto;
+  height: 42px;
+  max-width: 190px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .navbar-brand .brand-logo {
+    height: 36px;
+    max-width: 155px;
+  }
+}
