@@ -4837,3 +4837,29 @@ kbd {
     max-width: 155px;
   }
 }
+
+/* =====================================================
+   Bolda TV — Live TV Player-Only Layout
+   Channel selection is handled through TV Guide.
+   ===================================================== */
+
+#page-live .channel-sidebar,
+#page-live .channel-toggle-btn,
+#page-live .sidebar-expand-btn,
+#page-live .channel-sidebar-overlay {
+  display: none !important;
+}
+
+#page-live .home-layout {
+  display: block;
+}
+
+#page-live .player-section {
+  width: 100%;
+  height: 100%;
+}
+
+#page-live .video-container {
+  width: 100%;
+  height: 100%;
+}
