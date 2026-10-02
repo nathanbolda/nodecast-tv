@@ -158,7 +158,13 @@ class App {
 
         // Navigate to the page from URL hash, or default to home
         const hash = window.location.hash.slice(1); // Remove #
-        const initialPage = hash && this.pages[hash] ? hash : 'home';
+        let initialPage = hash && this.pages[hash] ? hash : 'home';
+
+        // Viewers should land directly on Live TV
+        if (this.currentUser?.role === 'viewer') {
+            initialPage = 'live';
+        }
+
         this.navigateTo(initialPage, true); // true = replace history (don't add)
 
         console.log('NodeCast TV initialized');
@@ -187,12 +193,17 @@ class App {
 
             this.currentUser = await response.json();
 
-            // Hide settings for viewers
+            // Configure navigation based on user role
             if (this.currentUser.role === 'viewer') {
-                const settingsLink = document.querySelector('.nav-link[data-page="settings"]');
-                if (settingsLink) {
-                    settingsLink.style.display = 'none';
-                }
+                // Viewers only see Live TV and TV Guide.
+                // Logout is added separately below.
+                const allowedPages = new Set(['live', 'guide']);
+
+                document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+                    if (!allowedPages.has(link.dataset.page)) {
+                        link.style.display = 'none';
+                    }
+                });
             }
 
             // Add logout button to navbar
@@ -241,6 +252,17 @@ class App {
     }
 
     navigateTo(pageName, replaceHistory = false) {
+        // Restrict viewers to Live TV, TV Guide, and active playback.
+        // Any attempt to access another page is redirected to Live TV.
+        if (this.currentUser?.role === 'viewer') {
+            const allowedPages = new Set(['live', 'guide', 'watch']);
+
+            if (!allowedPages.has(pageName)) {
+                pageName = 'live';
+                replaceHistory = true;
+            }
+        }
+
         // Don't navigate if already on this page
         if (this.currentPage === pageName && !replaceHistory) {
             return;
