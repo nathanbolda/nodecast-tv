@@ -512,7 +512,7 @@ class ChannelList {
             <img class="channel-logo" src="${this.getProxiedImageUrl(channel.tvgLogo)}" 
                  alt="" onerror="this.onerror=null;this.src='/img/placeholder.png'">
             <div class="channel-info">
-              <div class="channel-name">${this.escapeHtml(channel.name)}</div>
+              <div class="channel-name">${this.escapeHtml(this.getDisplayChannelName(channel))}</div>
               <div class="channel-program">${this.escapeHtml(this.getProgramInfo(channel) || '')}</div>
             </div>
             <button class="favorite-btn ${isFavorite ? 'active' : ''}" title="${isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}">
@@ -583,6 +583,34 @@ class ChannelList {
     }
 
     /**
+     * Get clean display name for a channel.
+     * This only affects what is shown in the UI.
+     * The original channel.name remains unchanged for EPG/search/playback.
+     */
+    getDisplayChannelName(channel) {
+        const original = channel.name || '';
+
+        // Remove country prefix
+        let name = original.replace(/^US\|\s*/i, '').trim();
+
+        // Remove trailing provider metadata in parentheses
+        name = name.replace(/\s*\([^)]*\)\s*$/, '').trim();
+
+        // Clean up common provider naming
+        const aliases = {
+            'MARQUEE SPORTS NETWORK': 'Marquee Sports Network',
+            'CHICAGO SPORTS NETWORK': 'Chicago Sports Network',
+            'NFL REDZONE': 'NFL RedZone',
+            'ABC 7 CHICAGO IL': 'ABC 7 Chicago',
+            'CBS 2 CHICAGO IL': 'CBS 2 Chicago',
+            'FOX 32 CHICAGO IL': 'FOX 32 Chicago',
+            'NBC 5 CHICAGO IL': 'NBC 5 Chicago'
+        };
+
+        return aliases[name] || name;
+    }
+
+    /**
      * Render channels for a specific group (called when expanding a collapsed group)
      */
     renderGroupChannels(groupName, container) {
@@ -625,7 +653,7 @@ class ChannelList {
             <img class="channel-logo" src="${this.getProxiedImageUrl(channel.tvgLogo)}" 
                  alt="" onerror="this.onerror=null;this.src='/img/placeholder.png'">
             <div class="channel-info">
-              <div class="channel-name">${this.escapeHtml(channel.name)}</div>
+              <div class="channel-name">${this.escapeHtml(this.getDisplayChannelName(channel))}</div>
               <div class="channel-program">${this.escapeHtml(this.getProgramInfo(channel) || '')}</div>
             </div>
             <button class="favorite-btn ${isFavorite ? 'active' : ''}" title="${isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}">
@@ -1043,7 +1071,7 @@ class ChannelList {
             <img class="channel-logo" src="${this.getProxiedImageUrl(channel.tvgLogo)}" 
                  alt="" onerror="this.onerror=null;this.src='/img/placeholder.png'">
             <div class="channel-info">
-              <div class="channel-name">${this.escapeHtml(channel.name)}</div>
+              <div class="channel-name">${this.escapeHtml(this.getDisplayChannelName(channel))}</div>
               <div class="channel-program">${this.getProgramInfo(channel) || ''}</div>
             </div>
             <button class="favorite-btn active" title="Remove from Favorites">
